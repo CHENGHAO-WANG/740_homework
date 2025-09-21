@@ -1,6 +1,7 @@
 ############
 # problem 1.3(a)
 ############
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 n <- 100
 sigma_w <- 1

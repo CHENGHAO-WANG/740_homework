@@ -3,6 +3,7 @@
 ############
 
 library(astsa)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 # Plot both series on the same graph with different colors and linetypes
 png("plots/Problem_1.1_earthquake_explosion_comparison.png", width = 2000, height = 1000, res = 200)
