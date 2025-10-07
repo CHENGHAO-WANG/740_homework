@@ -14,9 +14,9 @@ fit_ar2
 
 # Coefficients:
 #     1       2
-# 0.4286  0.4418
+# 0.43  0.44
 
-# Intercept: 11.45 (2.394)
+# Intercept: 11.45 (2.39)
 
 # Order selected 2  sigma^2 estimated as  32.32
 
@@ -35,15 +35,15 @@ lower <- pred_mean - 1.96 * pred_se
 
 data.frame(
   Week = 1:4,
-  Forecast = pred_mean,
-  Lower95 = lower,
-  Upper95 = upper
+  Forecast = round(pred_mean, 2),
+  Lower95 = round(lower, 2),
+  Upper95 = round(upper, 2)
 )
 
-#  Week Forecast  Lower95   Upper95
-#    1 87.59986 76.45756  98.74217
-#    2 86.76349 74.64094  98.88604
-#    3 87.33714 73.35405 101.32022
-#    4 87.21350 72.33052 102.09648
+#  Week Forecast Lower95 Upper95
+#    1    87.60   76.46   98.74
+#    2    86.76   74.64   98.89
+#    3    87.34   73.35  101.32
+#    4    87.21   72.33  102.10
 
 # This gives us the forecast for the next 4 weeks beyond the last week of the series.
