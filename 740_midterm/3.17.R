@@ -4,6 +4,8 @@
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+library(astsa)
+
 fit_ols <- ar.ols(cmort, order.max = 2, demean = FALSE, intercept = TRUE)
 fit_ols
 
