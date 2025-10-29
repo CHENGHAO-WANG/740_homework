@@ -74,7 +74,7 @@ round(svd_img$d, 2)
 # [1] 12.08  3.98  1.16  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00
 # [17]  0.00  0.00  0.00  0.00
 
-# Note that it's approximately rank-3.
+# Note that it's approximately rank-3 (But not exactly rank-3! It's full rank).
 
 # Cumulative proportion of variance explained
 cumvar <- cumsum(svd_img$d^2) / sum(svd_img$d^2)
@@ -119,6 +119,60 @@ for (rank in c(1, 2)) {
 #   - Lower rank = more compression but higher error (blurrier)
 #   - Higher rank = less compression but lower error (sharper)
 #   - First few singular values capture most of the information!
+
+# Visualize original and compressed images
+
+# Prepare for plotting - create approximations at different ranks
+ranks_to_plot <- c(1, 2, 3)
+approx_list <- list()
+approx_list[["Original"]] <- image_matrix
+
+for (rank in ranks_to_plot) {
+  if (rank == 1) {
+    compressed <- svd_img$d[1] * svd_img$u[, 1] %*% t(svd_img$v[, 1])
+  } else {
+    compressed <- svd_img$u[, 1:rank] %*% 
+      diag(svd_img$d[1:rank]) %*% 
+      t(svd_img$v[, 1:rank])
+  }
+  approx_list[[paste0("Rank-", rank)]] <- compressed
+}
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+png("../plots/Problem2_svd_image_compression.png", width = 800, height = 800, res = 100)
+# Create a 2x2 plot
+par(mfrow = c(2, 2), mar = c(2, 2, 3, 2))
+
+# Plot original
+image(image_matrix, col = gray.colors(256), 
+      main = "Original Image", axes = FALSE)
+box()
+
+# Plot approximations
+for (rank in ranks_to_plot) {
+  compressed <- approx_list[[paste0("Rank-", rank)]]
+  
+  # Calculate error metrics
+  abs_error <- norm(image_matrix - compressed, "F")
+  rel_error <- abs_error / norm(image_matrix, "F")
+  
+  # Calculate compression ratio
+  original_storage <- 50 * 50
+  compressed_storage <- rank * (50 + 1 + 50)
+  compression_ratio <- original_storage / compressed_storage
+  
+  # Plot
+  image(compressed, col = gray.colors(256), 
+        main = sprintf("Rank-%d\nError: %.1f%%, Compression: %.2fx", 
+                       rank, rel_error * 100, compression_ratio),
+        axes = FALSE)
+  box()
+}
+
+dev.off()
+
+# Reset plot parameters
+par(mfrow = c(1, 1))
 
 
 # EXAMPLE 3: Using SVD for Moore-Penrose Pseudoinverse
